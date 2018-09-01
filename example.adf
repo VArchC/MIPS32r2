@@ -1,0 +1,59 @@
+/*=======================================================
+  Instruction models
+=======================================================*/
+// Signed 64-bit result multiplication
+IM KulkarniSigned(word a, word b, word hi, word lo);
+// Unsigned 64-bit result multiplication
+IM KulkarniUnsigned(word a, word b, word hi, word lo);
+// Signed 32-bit result multiplication
+IM KulkarniSigned(word a, word b, word r);
+
+/*=======================================================
+  Energy models
+=======================================================*/
+// Default model - tracks proportion only
+EM DefaultEM();
+
+
+/*=======================================================
+  Operating parameters
+=======================================================*/
+// Default OP
+OP default_op  = {scaling = 1.0};
+// Kulkarni OP - multiplications save ~30% energy
+OP kulkarni_op = {scaling = 0.7};
+
+/*=======================================================
+  Defaults
+=======================================================*/
+energy     = DefaultEM();
+parameters = default_op;
+
+/*=======================================================
+  Approximation
+=======================================================*/
+approximation KULKARNI_MUL {
+  // Disabled on simulation startup
+  initial = off;
+
+  // Signed 64-bit result
+  instruction mult {
+    // hi, lo <= RB[rs] * RB[rt]
+    alt_behavior = KulkarniSigned(RB[rs], RB[rt], hi, lo);
+    parameters   = kulkarni_op;
+  }
+
+  // Unsigned 64-bit result
+  instruction multu {
+    // hi, lo <= RB[rs] * RB[rt]
+    alt_behavior = KulkarniUnsigned(RB[rs], RB[rt], hi, lo);
+    parameters   = kulkarni_op;
+  }
+
+  // Signed 32-bit result
+  instruction mul {
+    // RB[rd] <= RB[rs] * RB[rt]
+    alt_behavior = KulkarniSigned(RB[rs], RB[rt], RB[rd]);
+    parameters   = kulkarni_op;
+  }
+}

@@ -34,6 +34,7 @@ AC_ARCH(mips){
   ARCH_CTOR(mips) {
 
     ac_isa("mips_isa.ac");
+    ac_adf("example.adf");
     set_endian("big");
 
   };
