@@ -47,6 +47,7 @@ AC_ISA(mips){
 
   // mips32r2
   ac_instr<Type_R> seb, seh, ext, rotr, rotrv;
+  ac_instr<Type_R> wsbh;
 
   // FPU instructions - mips-I
   ac_instr<Type_R> absd, abss, addd, adds, ceqd, ceqs, coled, coles, coltd;
@@ -394,6 +395,9 @@ AC_ISA(mips){
 
     rotrv.set_asm("rotrv %reg, %reg, %reg", rd, rt, rs);
     rotrv.set_decoder(op=0x00, shamt=0x01, func=0x06);
+
+    wsbh.set_asm("wsbh %reg, %reg", rd, rt);
+    wsbh.set_decoder(op=0x1F, rs=0x00, shamt=0x02, func=0x20);
 
     absd.set_asm("abs.d %freg, %freg", shamt, rd);
     absd.set_decoder(op=0x11, rs=17, rt=0, func=0x05);

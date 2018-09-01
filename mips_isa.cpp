@@ -1124,6 +1124,16 @@ void ac_behavior( rotrv )
   dbg_printf("Result = %#x\n", RB[rd]);
 }
 
+void ac_behavior( wsbh )
+{
+  dbg_printf("wsbh r%d, r%d\n", rd, rt);
+
+  unsigned int v = RB[rt];
+  RB[rd] = ((v&0x00FF0000)<<8) | ((v&0xFF000000)>>8) | ((v&0x000000FF)<<8) | ((v&0x0000FF00)>>8);
+
+  dbg_printf("Result = %#x\n", RB[rd]);
+}
+
 void ac_behavior( clz )
 {
   dbg_printf("clz %%%d, %%%d\n", rd, rs);
