@@ -47,12 +47,15 @@ inline void save_double(double input, uint32_t index) {
 
 inline float load_float(uint32_t index) {
   float res;
-  memcpy(&res, &RBF[index], sizeof(uint32_t));
+  ac_word reg = RBF[index];
+  memcpy(&res, &reg, sizeof(uint32_t));
   return res;
 }
 
 inline void save_float(float input, uint32_t index) {
-  memcpy(&RBF[index], &input, sizeof(uint32_t));
+  ac_word reg;
+  memcpy(&reg, &input, sizeof(uint32_t));
+  RBF[index] = reg;
 }
 
 static bool custom_isnan(double var) {

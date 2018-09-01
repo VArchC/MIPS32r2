@@ -13,19 +13,17 @@
  ******************************************************/
  
 
-#ifndef mips_SYSCALL_H
-#define mips_SYSCALL_H
+#ifndef MIPS_SYSCALL_H
+#define MIPS_SYSCALL_H
 
-#include "mips_arch.H"
-#include "mips_arch_ref.H"
-#include "mips_parms.H"
-#include "ac_syscall.H"
+#include "mips_syscall_inc.H"
 
 //mips system calls
-class mips_syscall : public ac_syscall<mips_parms::ac_word, mips_parms::ac_Hword>, public mips_arch_ref
+_AC_SYSCALL_CLASS_
 {
 public:
-  mips_syscall(mips_arch& ref) : ac_syscall<mips_parms::ac_word, mips_parms::ac_Hword>(ref, mips_parms::AC_RAMSIZE), mips_arch_ref(ref) {};
+  _AC_SYSCALL_ARCH_USING_
+  _AC_SYSCALL_CTOR_ {};
   virtual ~mips_syscall() {};
 
   void get_buffer(int argn, unsigned char* buf, unsigned int size);

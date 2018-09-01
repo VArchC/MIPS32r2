@@ -32,15 +32,15 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  */
-
-#include "mips_syscall.H"
+#define _MIPS_SYSCALL_CPP_
+#include  "mips_syscall_inc.H"
 
 // 'using namespace' statement to allow access to all
 // mips-specific datatypes
 using namespace mips_parms;
 unsigned procNumber = 0;
 
-void mips_syscall::get_buffer(int argn, unsigned char* buf, unsigned int size)
+_AC_SYSCALL_IMPL_(void, get_buffer, int argn, unsigned char* buf, unsigned int size)
 {
   unsigned int addr = RB[4+argn];
   for (unsigned int i = 0; i<size; i++, addr++) {
@@ -48,14 +48,14 @@ void mips_syscall::get_buffer(int argn, unsigned char* buf, unsigned int size)
   }
 }
 
-void mips_syscall::guest2hostmemcpy(unsigned char *dst, uint32_t src,
+_AC_SYSCALL_IMPL_(void, guest2hostmemcpy, unsigned char *dst, uint32_t src,
                                     unsigned int size) {
   for (unsigned int i = 0; i < size; i++) {
     dst[i] = DATA_PORT->read_byte(src++);
   }
 }
 
-void mips_syscall::set_buffer(int argn, unsigned char* buf, unsigned int size)
+_AC_SYSCALL_IMPL_(void, set_buffer, int argn, unsigned char* buf, unsigned int size)
 {
   unsigned int addr = RB[4+argn];
 
@@ -64,14 +64,14 @@ void mips_syscall::set_buffer(int argn, unsigned char* buf, unsigned int size)
   }
 }
 
-void mips_syscall::host2guestmemcpy(uint32_t dst, unsigned char *src,
+_AC_SYSCALL_IMPL_(void, host2guestmemcpy, uint32_t dst, unsigned char *src,
                                     unsigned int size) {
   for (unsigned int i = 0; i < size; i++) {
     DATA_PORT->write_byte(dst++, src[i]);
   }
 }
 
-void mips_syscall::set_buffer_noinvert(int argn, unsigned char* buf, unsigned int size)
+_AC_SYSCALL_IMPL_(void, set_buffer_noinvert, int argn, unsigned char* buf, unsigned int size)
 {
   unsigned int addr = RB[4+argn];
 
@@ -81,23 +81,23 @@ void mips_syscall::set_buffer_noinvert(int argn, unsigned char* buf, unsigned in
   }
 }
 
-int mips_syscall::get_int(int argn)
+_AC_SYSCALL_IMPL_(int, get_int, int argn)
 {
   return RB[4+argn];
 }
 
-void mips_syscall::set_int(int argn, int val)
+_AC_SYSCALL_IMPL_(void, set_int, int argn, int val)
 {
   RB[2+argn] = val;
 }
 
-void mips_syscall::return_from_syscall()
+_AC_SYSCALL_IMPL_(void, return_from_syscall)
 {
   ac_pc = RB[31];
   npc = ac_pc + 4;
 }
 
-void mips_syscall::set_prog_args(int argc, char **argv)
+_AC_SYSCALL_IMPL_(void, set_prog_args, int argc, char **argv)
 {
   // ac_argstr holds argument strings to be stored into guest memory
   char ac_argstr[512];
@@ -150,24 +150,24 @@ void mips_syscall::set_prog_args(int argc, char **argv)
   procNumber ++;
 }
 
-void mips_syscall::set_pc(unsigned val) {
+_AC_SYSCALL_IMPL_(void, set_pc, unsigned val) {
   ac_pc.write(val);
   npc = ac_pc + 4;
 }
 
-void mips_syscall::set_return(unsigned val) {
+_AC_SYSCALL_IMPL_(void, set_return, unsigned val) {
   RB.write(31, val);
 }
 
-unsigned mips_syscall::get_return() {
+_AC_SYSCALL_IMPL_(unsigned, get_return) {
   return (unsigned) RB.read(31);
 }
 
-bool mips_syscall::is_mmap_anonymous(uint32_t flags) {
+_AC_SYSCALL_IMPL_(bool, is_mmap_anonymous, uint32_t flags) {
   return flags & 0x800;
 }
 
-uint32_t mips_syscall::convert_open_flags(uint32_t flags) {
+_AC_SYSCALL_IMPL_(uint32_t, convert_open_flags, uint32_t flags) {
   uint32_t dst = 0;
   dst |= (flags & 00000)? O_RDONLY : 0;
   dst |= (flags & 00001)? O_WRONLY : 0;
@@ -557,7 +557,7 @@ uint32_t mips_syscall::convert_open_flags(uint32_t flags) {
 #define MIPS__NR_Linux_syscalls		348
 
 
-int *mips_syscall::get_syscall_table() {
+_AC_SYSCALL_IMPL_(int *, get_syscall_table) {
   static int syscall_table[] = {
     MIPS__NR_restart_syscall,
     MIPS__NR_exit,
